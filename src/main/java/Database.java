@@ -1,3 +1,5 @@
+
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -11,25 +13,17 @@ public class Database {
 
     Connection conn = null;
 
-    public boolean connect(String filename) throws SQLException {
-
-
-        boolean check = new File("C:\\Users\\Business\\Desktop\\SQLite Viewer\\SQLite Viewer\\task\\src", filename).exists();
+    public boolean connect(String filename, JFileChooser fileChooser) {
 
 
         try {
-            if (check) {
-                String url = "jdbc:sqlite:C:\\Users\\Business\\Desktop\\SQLite Viewer\\SQLite Viewer\\task\\src\\" + filename;
-                conn = DriverManager.getConnection(url);
-                System.out.println("Connection to SQLite database " + filename + " has been established.");
-                return true;
-            } else {
-                JOptionPane.showMessageDialog(new Frame(), "File doesn't exist!");
-                return false;
-            }
 
+            String url = "jdbc:sqlite:" + fileChooser.getSelectedFile().getAbsolutePath();
+            conn = DriverManager.getConnection(url);
+            System.out.println("Connection to SQLite database " + filename + " has been established.");
+            return true;
         } catch (SQLException e) {
-            System.out.println("Error");
+            System.out.println("Error: " + e);
             return false;
         }
 

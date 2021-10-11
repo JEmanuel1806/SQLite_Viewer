@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.sql.SQLException;
 
 public class GUI extends JFrame {
@@ -57,7 +58,7 @@ public class GUI extends JFrame {
         button.setBounds(570, 50, 95, 30);
         button.addActionListener(e -> {
             try {
-                open(e, textField, comboBox, button2, textArea);
+                open(e, comboBox, button2, textArea);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -85,10 +86,21 @@ public class GUI extends JFrame {
         textArea.setText("SELECT * FROM " + comboBox.getSelectedItem() + ";");
     }
 
-    private void open(ActionEvent e, JTextField textField, JComboBox comboBox, JButton button2, JTextArea textArea) throws SQLException {
+    private void open(ActionEvent e,  JComboBox comboBox, JButton button2, JTextArea textArea) throws SQLException {
+
+        boolean connected = false;
+
         comboBox.removeAllItems();
-        boolean connected;
-        connected = database.connect(textField.getText());
+
+        JFileChooser fileChooser = new JFileChooser();
+
+        int response = fileChooser.showOpenDialog(null);
+
+        if(response == JFileChooser.APPROVE_OPTION) {
+            File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+            connected = database.connect(file.getName(), fileChooser);
+        }
+
 
         if (connected) {
             comboBox.setEnabled(true);
