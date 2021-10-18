@@ -19,11 +19,17 @@ public class Database {
         try {
 
             String url = "jdbc:sqlite:" + fileChooser.getSelectedFile().getAbsolutePath();
-            conn = DriverManager.getConnection(url);
-            System.out.println("Connection to SQLite database " + filename + " has been established.");
-            return true;
+            if (fileChooser.getSelectedFile().getAbsolutePath().contains(".db")) {
+                conn = DriverManager.getConnection(url);
+                System.out.println("Connection to SQLite database " + filename + " has been established.");
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(new Frame(), "This is not a SQLite database file!");
+                return false;
+            }
         } catch (SQLException e) {
             System.out.println("Error: " + e);
+            JOptionPane.showMessageDialog(new Frame(), "Connection failed.");
             return false;
         }
 
@@ -76,7 +82,10 @@ public class Database {
             DefaultTableModel defaultTableModel = new DefaultTableModel(data, columnNames);
             table.setModel(defaultTableModel);
 
-            JOptionPane.showMessageDialog(null, new JScrollPane(table));
+            JScrollPane scrollPane = new JScrollPane(table);
+            scrollPane.setPreferredSize(new Dimension(1200, 500));
+
+            JOptionPane.showMessageDialog(null, scrollPane);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(new Frame(), "Incorrect SQL Syntax!");
