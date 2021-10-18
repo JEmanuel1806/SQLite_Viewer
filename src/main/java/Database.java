@@ -1,3 +1,5 @@
+
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -11,25 +13,23 @@ public class Database {
 
     Connection conn = null;
 
-    public boolean connect(String filename) throws SQLException {
-
-
-        boolean check = new File("C:\\Users\\Business\\Desktop\\SQLite Viewer\\SQLite Viewer\\task\\src", filename).exists();
+    public boolean connect(String filename, JFileChooser fileChooser) {
 
 
         try {
-            if (check) {
-                String url = "jdbc:sqlite:C:\\Users\\Business\\Desktop\\SQLite Viewer\\SQLite Viewer\\task\\src\\" + filename;
+
+            String url = "jdbc:sqlite:" + fileChooser.getSelectedFile().getAbsolutePath();
+            if (fileChooser.getSelectedFile().getAbsolutePath().contains(".db")) {
                 conn = DriverManager.getConnection(url);
                 System.out.println("Connection to SQLite database " + filename + " has been established.");
                 return true;
             } else {
-                JOptionPane.showMessageDialog(new Frame(), "File doesn't exist!");
+                JOptionPane.showMessageDialog(new Frame(), "This is not a SQLite database file!");
                 return false;
             }
-
         } catch (SQLException e) {
-            System.out.println("Error");
+            System.out.println("Error: " + e);
+            JOptionPane.showMessageDialog(new Frame(), "Connection failed.");
             return false;
         }
 
@@ -82,7 +82,10 @@ public class Database {
             DefaultTableModel defaultTableModel = new DefaultTableModel(data, columnNames);
             table.setModel(defaultTableModel);
 
-            JOptionPane.showMessageDialog(null, new JScrollPane(table));
+            JScrollPane scrollPane = new JScrollPane(table);
+            scrollPane.setPreferredSize(new Dimension(1200, 500));
+
+            JOptionPane.showMessageDialog(null, scrollPane);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(new Frame(), "Incorrect SQL Syntax!");
