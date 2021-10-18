@@ -52,6 +52,8 @@ public class Database {
 
     public void execute(String query, JTable table) {
 
+        boolean tableEmpty = true;
+
         try {
             String sql = query;
 
@@ -79,13 +81,20 @@ public class Database {
                 data.add(vector);
             }
 
-            DefaultTableModel defaultTableModel = new DefaultTableModel(data, columnNames);
-            table.setModel(defaultTableModel);
+            if (!data.isEmpty())
+                tableEmpty = false;
 
-            JScrollPane scrollPane = new JScrollPane(table);
-            scrollPane.setPreferredSize(new Dimension(1200, 500));
+            if (!tableEmpty) {
+                DefaultTableModel defaultTableModel = new DefaultTableModel(data, columnNames);
+                table.setModel(defaultTableModel);
 
-            JOptionPane.showMessageDialog(null, scrollPane);
+                JScrollPane scrollPane = new JScrollPane(table);
+                scrollPane.setPreferredSize(new Dimension(1200, 500));
+
+                JOptionPane.showMessageDialog(null, scrollPane);
+            } else {
+                JOptionPane.showMessageDialog(new Frame(), "No results!");
+            }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(new Frame(), "Incorrect SQL Syntax!");
